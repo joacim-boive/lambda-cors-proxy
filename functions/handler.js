@@ -1,15 +1,15 @@
 'use strict';
 
-const request = require('request');
+import { get as getRequest } from 'request';
 
-module.exports.get = (event, context, callback) => {
+export const get = (event, context, callback) => {
   console.log('Starting Proxy!');
 
   const qs = event.queryStringParameters;
   const url = qs.url; //url is defined as a required parameter in API Gateway, so we know it exists.
   const isDebug = qs ? qs.debug : false;
 
-  request.get(url, (error, response, body) => {
+  getRequest(url, (error, response, body) => {
     let reply = {};
 
     if (error) {
