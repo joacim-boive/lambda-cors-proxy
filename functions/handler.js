@@ -1,0 +1,39 @@
+'use strict';
+
+const request = require('request');
+
+module.exports.get = (event, context, callback) => {
+    console.log('Starting Proxy!');
+
+    const qs = event.queryStringParameters;
+    const url = qs ? qs.url : 'https://www.google.com';
+    const isDebug = qs ? qs.debug : false;
+
+    request.get(url, (error, response, body) =>{
+        let reply = {};
+
+        if (error) {
+            console.log('ERROR!');
+            reply.statusCode = 502;
+            reply.body = {};
+            reply.body.code = error.stack;
+
+            console.error('error:', error); // Print the error if one occurred
+
+            callback(null, reply); //This is an async function so it won't return the error to the client otherwise.
+
+        } else {
+            const contentType = response.headers['content-type'] ? response.headers['content-type'] : 'text';
+
+            reply.statusCode = response && response.statusCode || 200;
+            reply.headers = { 'content-type': contentType };
+            reply.body = body;
+
+            if(isDebug){
+                console.log(reply);
+            }
+
+            callback(null, reply);
+        }
+    });
+};
