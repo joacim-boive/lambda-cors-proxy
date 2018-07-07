@@ -3,37 +3,36 @@
 const request = require('request');
 
 module.exports.get = (event, context, callback) => {
-    console.log('Starting Proxy!');
+  console.log('Starting Proxy!');
 
-    const qs = event.queryStringParameters;
-    const url = qs ? qs.url : 'https://www.google.com';
-    const isDebug = qs ? qs.debug : false;
+  const qs = event.queryStringParameters;
+  const url = qs.url; //url is defined as a required parameter in API Gateway, so we know it exists.
+  const isDebug = qs ? qs.debug : false;
 
-    request.get(url, (error, response, body) =>{
-        let reply = {};
+  request.get(url, (error, response, body) => {
+    let reply = {};
 
-        if (error) {
-            console.log('ERROR!');
-            reply.statusCode = 502;
-            reply.body = {};
-            reply.body.code = error.stack;
+    if (error) {
+      console.log('ERROR!');
+      reply.statusCode = 502;
+      reply.body = {};
+      reply.body.code = error.stack;
 
-            console.error('error:', error); // Print the error if one occurred
+      console.error('error:', error); // Print the error if one occurred
 
-            callback(null, reply); //This is an async function so it won't return the error to the client otherwise.
+      callback(null, reply); //This is an async function so it won't return the error to the client otherwise.
+    } else {
+      const contentType = response.headers['content-type'] ? response.headers['content-type'] : 'text';
 
-        } else {
-            const contentType = response.headers['content-type'] ? response.headers['content-type'] : 'text';
+      reply.statusCode = (response && response.statusCode) || 200;
+      reply.headers = { 'content-type': contentType };
+      reply.body = body;
 
-            reply.statusCode = response && response.statusCode || 200;
-            reply.headers = { 'content-type': contentType };
-            reply.body = body;
+      if (isDebug) {
+        console.log(reply);
+      }
 
-            if(isDebug){
-                console.log(reply);
-            }
-
-            callback(null, reply);
-        }
-    });
+      callback(null, reply);
+    }
+  });
 };
