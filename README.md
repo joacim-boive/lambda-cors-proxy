@@ -21,6 +21,5 @@ Add `&debug` to the end of the URL to get the response body dumped to Cloudwatch
 - Serverless configured for offline debugging
 
 ### Check package.json för NPM scripts
-npm start - start serverless offline
-
-npm run debug - start serverless offline in debug mode
+- npm start - start serverless offline
+- npm run debug - start serverless offline in debug mode
