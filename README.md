@@ -6,7 +6,7 @@ You need to setup your AWS credentials first - use [aws config](https://docs.aws
     npm i
     sls deploy
 
-Boom!
+**Boom!**
 
 Check the console for your proxy endpoint.
 
