@@ -19,8 +19,6 @@ export const get = (event, context, callback) => {
       reply.body.code = error.stack;
 
       console.error('error:', error); // Print the error if one occurred
-
-      callback(null, reply); //This is an async function so it won't return the error to the client otherwise.
     } else {
       const contentType = response.headers['content-type'] ? response.headers['content-type'] : 'text';
 
@@ -31,8 +29,8 @@ export const get = (event, context, callback) => {
       if (isDebug) {
         console.log(reply);
       }
-
-      callback(null, reply);
     }
+      
+      callback(null, reply); //This is an async function so it won't return the error to the client otherwise.
   });
 };
